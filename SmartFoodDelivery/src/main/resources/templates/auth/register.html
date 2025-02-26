@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartFood - Kayıt Ol</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #ff6347;
+            --secondary-color: #333;
+            --background-color: #f5f5f5;
+            --error-color: #dc3545;
+            --success-color: #28a745;
+            --input-border: #ddd;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 500px;
+            margin: auto;
+        }
+
+        .auth-form {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .auth-form h2 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--secondary-color);
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--input-border);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(255, 99, 71, 0.1);
+        }
+
+        .alert {
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+
+        .alert-error {
+            background-color: #fff5f5;
+            color: var(--error-color);
+            border: 1px solid var(--error-color);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 1rem;
+        }
+
+        .submit-btn:hover {
+            background-color: #ff4f2b;
+            transform: translateY(-2px);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .auth-links {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--input-border);
+        }
+
+        .auth-links p {
+            color: var(--secondary-color);
+            font-size: 0.95rem;
+        }
+
+        .auth-links a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .auth-links a:hover {
+            color: #ff4f2b;
+            text-decoration: underline;
+        }
+
+        /* Required field indicator */
+        .form-group label::after {
+            content: "*";
+            color: var(--error-color);
+            margin-left: 4px;
+        }
+
+        /* Input hover effect */
+        .form-group input:hover {
+            border-color: #ccc;
+        }
+
+        /* Phone input specific styling */
+        input[type="tel"] {
+            letter-spacing: 1px;
+        }
+
+        /* Password strength indicator */
+        .password-strength {
+            height: 4px;
+            margin-top: 0.5rem;
+            border-radius: 2px;
+            background: #eee;
+        }
+
+        .password-strength div {
+            height: 100%;
+            border-radius: 2px;
+            transition: var(--transition);
+            width: 0;
+        }
+
+        /* Responsive design */
+        @media (max-width: 576px) {
+            .auth-container {
+                padding: 1rem;
+            }
+
+            .auth-form {
+                padding: 1.5rem;
+            }
+
+            .auth-form h2 {
+                font-size: 1.75rem;
+            }
+
+            .form-group label {
+                font-size: 0.9rem;
+            }
+
+            .form-group input {
+                padding: 0.6rem 0.8rem;
+                font-size: 0.95rem;
+            }
+
+            .submit-btn {
+                padding: 0.8rem;
+            }
+        }
+
+        /* Loading state */
+        .submit-btn.loading {
+            position: relative;
+            color: transparent;
+        }
+
+        .submit-btn.loading::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 0.8s linear infinite;
+            transform: translate(-50%, -50%);
+        }
+
+        @keyframes spin {
+            to {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+
+        /* Form validation styles */
+        .form-group input:invalid {
+            border-color: var(--error-color);
+        }
+
+        .form-group input:valid {
+            border-color: var(--success-color);
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ff4f2b;
+        }
+    </style>
+</head>
+<body>
+<div class="auth-container">
+    <form class="auth-form" th:action="@{/auth/register}" method="post" th:object="${user}">
+        <h2>Kayıt Ol</h2>
+
+        <!-- Error Message -->
+        <div th:if="${error}" class="alert alert-error" th:text="${error}">
+            Error message
+        </div>
+
+        <div class="form-group">
+            <label for="username">Kullanıcı Adı</label>
+            <input type="text" id="username" name="username" th:field="*{username}"
+                   required minlength="3" maxlength="20"
+                   pattern="[a-zA-Z0-9_-]*">
+        </div>
+
+        <div class="form-group">
+            <label for="email">E-posta</label>
+            <input type="email" id="email" name="email" th:field="*{email}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Şifre</label>
+            <input type="password" id="password" name="password" th:field="*{password}"
+                   required minlength="6">
+            <div class="password-strength">
+                <div></div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="firstName">Ad</label>
+            <input type="text" id="firstName" name="firstName" th:field="*{firstName}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="lastName">Soyad</label>
+            <input type="text" id="lastName" name="lastName" th:field="*{lastName}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="phone">Telefon</label>
+            <input type="tel" id="phone" name="phone" th:field="*{phone}"
+                   required pattern="[0-9]{10}">
+        </div>
+
+        <button type="submit" class="submit-btn">Kayıt Ol</button>
+
+        <div class="auth-links">
+            <p>Zaten hesabınız var mı? <a th:href="@{/auth/login}">Giriş Yap</a></p>
+        </div>
+    </form>
+</div>
+</body>
+</html>

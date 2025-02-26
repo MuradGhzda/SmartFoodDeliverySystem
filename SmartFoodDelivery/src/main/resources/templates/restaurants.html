@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartFood - Restoranlar</title>
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Custom CSS -->
+  <style>
+      /* CSS Reset ve Temel Değişkenler */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+:root {
+    --primary-color: #ff6347;
+    --secondary-color: #333;
+    --background-color: #f9f9f9;
+    --text-color: #333;
+    --shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+/* Header Bölümü */
+.header {
+    background-color: white;
+    box-shadow: var(--shadow);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+}
+
+.logo {
+    color: var(--primary-color);
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.nav-menu {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+}
+
+.nav-link {
+    color: var(--text-color);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.nav-link:hover {
+    color: var(--primary-color);
+}
+
+/* Arama Bölümü */
+.search-container {
+    max-width: 600px;
+    margin: 1rem auto;
+    padding: 0 1rem;
+}
+
+.search-form {
+    display: flex;
+    gap: 1rem;
+}
+
+.search-input {
+    flex: 1;
+    padding: 0.75rem;
+    border: 2px solid var(--primary-color);
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.search-button {
+    padding: 0.75rem 1.5rem;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.search-button:hover {
+    background: #e5533d;
+}
+
+/* Filtre Bölümü */
+.filters {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+}
+
+.filter-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.filter-button {
+    padding: 0.75rem 1.5rem;
+    border: 2px solid var(--primary-color);
+    border-radius: 8px;
+    background: white;
+    color: var(--primary-color);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.filter-button:hover,
+.filter-button.active {
+    background: var(--primary-color);
+    color: white;
+}
+
+/* Restoran Grid ve Kartları */
+.restaurants {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.restaurant-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.restaurant-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+}
+
+.restaurant-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* Restoran Resim ve Placeholder */
+.restaurant-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.restaurant-image.placeholder-image {
+    width: 100%;
+    height: 200px;
+    background: linear-gradient(135deg, #ff6347, #ff8367);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+    font-weight: bold;
+    color: white;
+}
+
+.placeholder-image::after {
+    content: attr(data-letters);
+    position: absolute;
+    color: white;
+    font-size: 4rem;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+.restaurant-image.placeholder-image::before {
+    content: attr(data-letters);
+}
+
+/* Her placeholder için farklı gradient arka planlar */
+.placeholder-image[data-letters^="A"],
+.placeholder-image[data-letters^="E"] {
+    background: linear-gradient(135deg, #FF6B6B, #FFE66D);
+}
+
+.placeholder-image[data-letters^="B"],
+.placeholder-image[data-letters^="F"] {
+    background: linear-gradient(135deg, #4ECDC4, #556270);
+}
+
+.placeholder-image[data-letters^="C"],
+.placeholder-image[data-letters^="G"] {
+    background: linear-gradient(135deg, #6C5CE7, #A8E6CF);
+}
+
+.placeholder-image[data-letters^="D"],
+.placeholder-image[data-letters^="H"] {
+    background: linear-gradient(135deg, #ff6347, #ff8367);
+}
+
+/* Default gradient for other letters */
+.placeholder-image {
+    background: linear-gradient(135deg, #2c3e50, #3498db);
+}
+
+/* Restoran İçerik Bölümü */
+.restaurant-content {
+    padding: 1.5rem;
+}
+
+.restaurant-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--secondary-color);
+}
+
+.restaurant-details {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.rating i {
+    color: #ffd700;
+}
+
+/* Sayfalama */
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin: 2rem 0;
+}
+
+.page-button {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--primary-color);
+    border-radius: 5px;
+    background: white;
+    color: var(--primary-color);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.page-button:hover,
+.page-button.active {
+    background: var(--primary-color);
+    color: white;
+}
+
+/* Responsive Tasarım */
+@media (max-width: 768px) {
+    .nav-menu {
+        display: none;
+    }
+
+    .filter-group {
+        flex-direction: column;
+    }
+
+    .filter-button {
+        width: 100%;
+    }
+
+    .restaurant-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .search-form {
+        flex-direction: column;
+    }
+
+    .search-button {
+        width: 100%;
+    }
+}
+/* Restoranlar Bölümü */
+.restaurants {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.restaurant-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+/* Restoran Kartı */
+.restaurant-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.restaurant-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.restaurant-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+/* Resim Bölümü */
+.restaurant-image-container {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+}
+
+.restaurant-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.placeholder-image {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #ff6347, #ff8367);
+    color: white;
+    font-size: 3rem;
+    font-weight: bold;
+}
+
+/* İçerik Bölümü */
+.restaurant-content {
+    padding: 1.5rem;
+}
+
+.restaurant-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+/* Üst Detaylar */
+.restaurant-details-top {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.rating {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.rating i {
+    color: #ffd700;
+}
+
+.delivery-time {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    color: #666;
+}
+
+/* Alt Detaylar */
+.restaurant-details-bottom {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.detail-label {
+    color: #888;
+    margin-right: 0.3rem;
+}
+
+.detail-value {
+    font-weight: 500;
+    color: #333;
+}
+
+/* Responsive Tasarım */
+@media (max-width: 768px) {
+    .restaurant-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .restaurant-image-container {
+        height: 180px;
+    }
+}
+    </style>
+</head>
+<body>
+<header class="header">
+  <nav class="nav-container">
+    <a th:href="@{/}" class="logo">SmartFood</a>
+    <ul class="nav-menu">
+      <li><a th:href="@{/}" class="nav-link">Ana Sayfa</a></li>
+      <li><a th:href="@{/restaurants}" class="nav-link">Restoranlar</a></li>
+      <li><a th:href="@{/orders}" class="nav-link">Siparişlerim</a></li>
+      <li><a th:href="@{/account}" class="nav-link">Hesabım</a></li>
+      <li>
+        <a th:href="@{/cart}" class="nav-link">
+          <i class="fas fa-shopping-cart"></i>
+          <span th:text="${cartCount ?: '0'}">0</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+  <!-- Search Section -->
+  <div class="search-container">
+    <form th:action="@{/restaurants}" method="get" class="search-form">
+      <input type="text"
+             name="query"
+             th:value="${searchQuery}"
+             class="search-input"
+             placeholder="Restoran veya yemek ara...">
+      <button type="submit" class="search-button">
+        <i class="fas fa-search"></i> Ara
+      </button>
+    </form>
+  </div>
+
+  <!-- Filters Section -->
+  <section class="filters">
+    <div class="filter-group">
+      <button th:each="cuisineType : ${cuisines}"
+              class="filter-button"
+              th:classappend="${selectedCuisine == cuisineType ? 'active' : ''}"
+              th:onclick="'window.location.href=\'' + @{/restaurants(cuisine=${cuisineType})} + '\''"
+              th:text="${cuisineType}">
+        Cuisine Type
+      </button>
+    </div>
+  </section>
+
+  <!-- Restaurants Section -->
+  <section class="restaurants">
+    <div class="restaurant-grid">
+      <!-- Restoran Kartı -->
+      <div th:each="restaurant : ${restaurants}" class="restaurant-card">
+        <a th:href="@{/restaurants/{id}(id=${restaurant.id})}" class="restaurant-link">
+          <!-- Restoran Resmi veya Placeholder -->
+          <div class="restaurant-image-container">
+            <!-- Placeholder Image -->
+            <div th:if="${#strings.isEmpty(restaurant.imageUrl)}"
+                 class="restaurant-image placeholder-image"
+                 th:with="firstLetter=${#strings.substring(restaurant.name,0,1).toUpperCase()}"
+                 th:text="${firstLetter}">
+            </div>
+            <!-- Gerçek Resim -->
+            <img th:unless="${#strings.isEmpty(restaurant.imageUrl)}"
+                 th:src="${restaurant.imageUrl}"
+                 th:alt="${restaurant.name}"
+                 class="restaurant-image">
+          </div>
+
+          <!-- Restoran Bilgileri -->
+          <div class="restaurant-content">
+            <h3 class="restaurant-title" th:text="${restaurant.name}"></h3>
+
+            <!-- Üst Detaylar (Rating ve Teslimat Süresi) -->
+            <div class="restaurant-details-top">
+              <div class="rating">
+                <i class="fas fa-star"></i>
+                <span th:text="${restaurant.rating}"></span>
+              </div>
+              <div class="delivery-time">
+                <i class="fas fa-clock"></i>
+                <span th:text="|${restaurant.deliveryTime} dk|"></span>
+              </div>
+            </div>
+
+            <!-- Alt Detaylar (Min. Sipariş ve Teslimat Ücreti) -->
+            <div class="restaurant-details-bottom">
+              <div class="min-order">
+                <span class="detail-label">Min. Sipariş:</span>
+                <span class="detail-value" th:text="|₺${restaurant.minOrderAmount}|"></span>
+              </div>
+              <div class="delivery-fee">
+                <span class="detail-label">Teslimat:</span>
+                <span class="detail-value" th:text="|₺${restaurant.deliveryFee}|"></span>
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pagination -->
+  <div class="pagination" th:if="${totalPages > 1}">
+    <button class="page-button"
+            th:if="${currentPage > 0}"
+            th:onclick="'window.location.href=\'' + @{/restaurants(page=${currentPage - 1})} + '\''">
+      ←
+    </button>
+    <button th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
+            class="page-button"
+            th:classappend="${pageNum == currentPage ? 'active' : ''}"
+            th:onclick="'window.location.href=\'' + @{/restaurants(page=${pageNum})} + '\''">
+      <span th:text="${pageNum + 1}">1</span>
+    </button>
+    <button class="page-button"
+            th:if="${currentPage < totalPages - 1}"
+            th:onclick="'window.location.href=\'' + @{/restaurants(page=${currentPage + 1})} + '\''">
+      →
+    </button>
+  </div>
+</main>
+</body>
+</html>

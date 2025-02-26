@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Hakkımızda - SmartFood</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #ff6347;
+            --secondary-color: #333;
+            --background-color: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-color);
+            color: var(--secondary-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-title {
+            text-align: center;
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .about-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .about-section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title i {
+            margin-right: 10px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--background-color);
+            border-radius: 10px;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--secondary-color);
+        }
+
+        .value-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .value-item i {
+            color: var(--primary-color);
+            margin-right: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .home-button {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            border-radius: 50%;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-decoration: none;
+            transition: transform 0.3s ease;
+        }
+
+        .home-button:hover {
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1 class="page-title">Hakkımızda</h1>
+
+    <div class="about-card">
+        <div class="about-section">
+            <h2 class="section-title">
+                <i class="fas fa-history"></i>
+                Hikayemiz
+            </h2>
+            <p>SmartFood olarak, İzmir'in lezzetlerini 2024 yılından bu yana evinize getiriyoruz. Amacımız, şehrimizin en iyi restoranlarını müşterilerimizle buluşturarak lezzetli yemekleri herkes için ulaşılabilir kılmak.</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-number">1000+</div>
+                <div class="stat-label">Restoran</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">50000+</div>
+                <div class="stat-label">Mutlu Müşteri</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">30 dk</div>
+                <div class="stat-label">Ortalama Teslimat</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">4.8/5</div>
+                <div class="stat-label">Müşteri Memnuniyeti</div>
+            </div>
+        </div>
+
+        <div class="about-section">
+            <h2 class="section-title">
+                <i class="fas fa-bullseye"></i>
+                Misyonumuz
+            </h2>
+            <p>İzmir'in en kaliteli restoranlarını müşterilerimizle buluşturarak, yemek siparişi deneyimini mükemmelleştirmek ve herkesin sevdiği lezzetlere kolayca ulaşmasını sağlamak.</p>
+        </div>
+
+        <div class="about-section">
+            <h2 class="section-title">
+                <i class="fas fa-star"></i>
+                Değerlerimiz
+            </h2>
+            <div class="value-item">
+                <i class="fas fa-check-circle"></i>
+                <span>Müşteri memnuniyeti odaklı hizmet</span>
+            </div>
+            <div class="value-item">
+                <i class="fas fa-check-circle"></i>
+                <span>Hızlı ve güvenilir teslimat</span>
+            </div>
+            <div class="value-item">
+                <i class="fas fa-check-circle"></i>
+                <span>Kaliteli restoran seçimi</span>
+            </div>
+            <div class="value-item">
+                <i class="fas fa-check-circle"></i>
+                <span>Şeffaf ve dürüst iletişim</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<a href="/" class="home-button">
+    <i class="fas fa-home"></i>
+</a>
+</body>
+</html>

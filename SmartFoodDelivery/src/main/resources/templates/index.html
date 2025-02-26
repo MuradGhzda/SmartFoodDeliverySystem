@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartFood - Online Yemek Siparişi</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #ff6347;
+            --secondary-color: #333;
+            --background-color: #f5f5f5;
+            --text-color: #333;
+            --card-bg: #ffffff;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+            --border-radius: 10px;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        /* Header Styles */
+        .header {
+            background-color: var(--card-bg);
+            box-shadow: var(--shadow);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .logo {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 1rem;
+            list-style: none;
+            align-items: center;
+        }
+
+       .nav-link {
+       white-space: nowrap;
+    color: var(--text-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: var(--transition);
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--border-radius);
+    border: none;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.9rem;
+}
+
+        .nav-link:hover {
+            color: var(--primary-color);
+            background-color: rgba(255, 99, 71, 0.1);
+        }
+
+        .cart-icon {
+    position: relative;
+    display: inline-block;
+}
+
+.cart-count {
+    position: absolute;
+    top: -6px;          /* -8px'den -6px'e düşürdüm */
+    right: -6px;        /* -8px'den -6px'e düşürdüm */
+    background-color: var(--primary-color);
+    color: white;
+    font-size: 0.7rem;  /* 0.75rem'den 0.7rem'e düşürdüm */
+    padding: 1px 4px;   /* 2px 6px'den 1px 4px'e düşürdüm */
+    border-radius: 50%;
+    min-width: 15px;    /* 18px'den 15px'e düşürdüm */
+    height: 15px;       /* 18px'den 15px'e düşürdüm */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+}
+.cart-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-color), #ff8367);
+            color: white;
+            text-align: center;
+            padding: 8rem 1rem 4rem;
+            margin-top: 60px;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 1rem;
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 0.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .search-button {
+            padding: 1rem 2rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .search-button:hover {
+            background: #ff4f2b;
+            transform: translateY(-2px);
+        }
+
+        /* Grid Sections */
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            margin: 4rem 0 2rem;
+            color: var(--secondary-color);
+            font-weight: 600;
+        }
+
+        .grid-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            padding: 0 1rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .card-content {
+            padding: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--secondary-color);
+        }
+
+        .card-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 1rem 0;
+        }
+
+        .rating {
+            color: var(--warning-color);
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .delivery-time {
+            color: var(--text-color);
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--secondary-color);
+            color: white;
+            padding: 4rem 0 2rem;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            padding: 0 1rem;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            opacity: 0.8;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            opacity: 1;
+            color: var(--primary-color);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            color: white;
+            font-size: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .social-links a:hover {
+            color: var(--primary-color);
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+
+            .hero {
+                padding: 6rem 1rem 3rem;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .search-bar {
+                flex-direction: column;
+                padding: 1rem;
+            }
+
+            .search-button {
+                width: 100%;
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+                margin: 3rem 0 1.5rem;
+            }
+
+            .grid-container {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .social-links {
+                justify-content: center;
+            }
+        }
+                /* Admin panel link stili */
+                .nav-link i.fas.fa-cog {
+            margin-right: 5px;
+}
+
+.nav-link:has(i.fas.fa-cog) {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.nav-link:has(i.fas.fa-cog):hover {
+    background-color: #ff4f2b;
+    color: white;
+}
+/* Admin Panel butonu için özel stil */
+.nav-link.admin-link {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 0.5rem 0.75rem;
+    border-radius: 4px;
+}
+
+.nav-link.admin-link:hover {
+    background-color: #ff4f2b;
+    color: white;
+}
+
+
+    </style>
+</head>
+<body>
+<header class="header">
+    <nav class="nav-container">
+        <a href="/" class="logo">SmartFood</a>
+        <ul class="nav-menu">
+            <li><a href="/" class="nav-link">Ana Sayfa</a></li>
+            <li><a href="/restaurants" class="nav-link">Restoranlar</a></li>
+
+            <!-- Giriş yapmış kullanıcılar için -->
+            <li sec:authorize="isAuthenticated()">
+                <a href="/orders" class="nav-link">Siparişlerim</a>
+            </li>
+            <li sec:authorize="isAuthenticated()">
+                <a href="/account" class="nav-link">Hesabım</a>
+            </li>
+
+            <li sec:authorize="hasRole('ADMIN')">
+                <a href="/admin/dashboard" class="nav-link admin-link">
+                    <i class="fas fa-cog"></i> Admin Panel
+                </a>
+            </li>
+            <!-- Sepet (giriş yapmış kullanıcılar için) -->
+            <li sec:authorize="isAuthenticated()">
+                <a href="/cart" class="nav-link">
+                    <div class="cart-wrapper">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-count" th:text="${cartItemCount}">0</span>
+                    </div>
+                </a>
+            </li>
+
+            <!-- Giriş yapmamış kullanıcılar için -->
+            <li sec:authorize="!isAuthenticated()">
+                <a href="/auth/login" class="nav-link">Giriş</a>
+            </li>
+            <li sec:authorize="!isAuthenticated()">
+                <a href="/auth/register" class="nav-link">Üye Ol</a>
+            </li>
+
+            <!-- Çıkış butonu (giriş yapmış kullanıcılar için) -->
+            <li sec:authorize="isAuthenticated()">
+                <a href="/auth/logout" class="nav-link">Çıkış</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+
+<section class="hero">
+    <div class="hero-content">
+        <h1>Lezzetli Yemekler Kapınızda!</h1>
+        <p>En sevdiğiniz restoranlardan dakikalar içinde sipariş verin</p>
+        <div class="search-bar">
+            <input type="text" class="search-input" placeholder="Restoran veya yemek arayın...">
+            <button class="search-button">
+                <i class="fas fa-search"></i>
+                Ara
+            </button>
+        </div>
+    </div>
+</section>
+
+<section>
+    <h2 class="section-title">Yemek Kategorileri</h2>
+    <div class="grid-container">
+        <div class="card">
+            <img src="/images/doner.jpg" alt="Döner & Kebap">
+            <div class="card-content">
+                <h3 class="card-title">Döner & Kebap</h3>
+                <p>Geleneksel Türk mutfağının vazgeçilmezleri</p>
+            </div>
+        </div>
+        <div class="card">
+            <img src="/images/burger.jpg" alt="Burger">
+            <div class="card-content">
+                <h3 class="card-title">Burger</h3>
+                <p>Enfes burgerler ve yan lezzetler</p>
+            </div>
+        </div>
+        <div class="card">
+            <img src="/images/pizza.jpeg" alt="Pizza">
+            <div class="card-content">
+                <h3 class="card-title">Pizza</h3>
+                <p>İtalyan mutfağının eşsiz lezzetleri</p>
+            </div>
+        </div>
+        <div class="card">
+            <img src="/images/tatli.jpg" alt="Tatlı">
+            <div class="card-content">
+                <h3 class="card-title">Tatlı</h3>
+                <p>Vazgeçilmez tatlı lezzetler</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!--<section>-->
+<!--    <h2 class="section-title">Popüler Restoranlar</h2>-->
+<!--    <div class="grid-container">-->
+<!--        <div th:each="restaurant : ${popularRestaurants}" class="card">-->
+<!--            &lt;!&ndash; Restoranın tamamını link yapın &ndash;&gt;-->
+<!--            <a th:href="@{/restaurants/{id}(id=${restaurant.id})}" class="card">-->
+<!--                <img th:src="${restaurant.imageUrl}" alt="Restaurant">-->
+<!--                <div class="card-content">-->
+<!--                    <h3 class="card-title" th:text="${restaurant.name}">Restoran Adı</h3>-->
+<!--                    <div class="card-info">-->
+<!--                <span class="rating">-->
+<!--                    <i class="fas fa-star"></i>-->
+<!--                    <span th:text="${restaurant.rating}">4.5</span>-->
+<!--                </span>-->
+<!--                        <span class="delivery-time">-->
+<!--                    <i class="fas fa-clock"></i>-->
+<!--                    <span th:text="${restaurant.deliveryTime}">30-45 dk</span>-->
+<!--                </span>-->
+<!--                    </div>-->
+<!--                    <p class="category" th:text="${restaurant.category}">Restoran Kategorisi</p>-->
+<!--                </div>-->
+<!--            </a>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</section>-->
+
+<footer class="footer">
+    <div class="footer-content">
+        <div class="footer-section">
+            <h3>SmartFood</h3>
+            <p>Türkiye'nin online yemek siparişi platformu</p>
+        </div>
+        <div class="footer-section">
+            <h3>Hızlı Erişim</h3>
+            <ul class="footer-links">
+                <li><a href="/about">Hakkımızda</a></li>
+                <li><a href="/restaurants">Restoranlar</a></li>
+                <li><a href="/contact">İletişim</a></li>
+                <li><a href="/faq">Sıkça Sorulan Sorular</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h3>İletişim & Konum</h3>
+            <ul class="footer-links">
+                <li><i class="fas fa-phone"></i> 0850 123 4567</li>
+                <li><i class="fas fa-envelope"></i> iletisim@smartfood.com</li>
+                <li id="location-info">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Konum yükleniyor...</span>
+                </li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h3>Bizi Takip Edin</h3>
+            <div class="social-links">
+                <a href="#" title="Facebook"><i class="fab fa-facebook"></i></a>
+                <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+            </div>
+            <div class="app-links" style="margin-top: 1rem;">
+                <p style="margin-bottom: 0.5rem;">Mobil Uygulamamızı İndirin</p>
+                <a href="#" class="app-store-link">
+                    <i class="fab fa-app-store"></i> App Store
+                </a>
+                <a href="#" class="play-store-link">
+                    <i class="fab fa-google-play"></i> Play Store
+                </a>
+            </div>
+        </div>
+        <div class="footer-section">
+            <h3>Ödeme Yöntemleri</h3>
+            <div class="payment-methods">
+                <i class="fab fa-cc-visa"></i>
+                <i class="fab fa-cc-mastercard"></i>
+                <i class="fab fa-cc-paypal"></i>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2024 SmartFood. Tüm hakları saklıdır.</p>
+    </div>
+</footer>
+
+<!-- Konum için style -->
+<style>
+#location-info {
+    transition: var(--transition);
+    display: flex;
+    align-items: start;
+    gap: 0.5rem;
+    line-height: 1.4;
+}
+
+#location-info a:hover {
+    color: var(--primary-color) !important;
+    opacity: 0.8;
+}
+
+.location-link {
+    color: inherit;
+    text-decoration: underline;
+    font-size: 0.9rem;
+    margin-top: 0.3rem;
+    display: inline-block;
+}
+
+.location-link:hover {
+    color: var(--primary-color);
+}
+</style>
+
+<!-- Konum için script -->
+<script>
+function getLocation() {
+    const locationInfo = document.getElementById('location-info');
+
+    if (!navigator.geolocation) {
+        locationInfo.innerHTML = '<i class="fas fa-map-marker-alt"></i> Tarayıcınız konum özelliğini desteklemiyor.';
+        return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+        async (position) => {
+            try {
+                const { latitude, longitude } = position.coords;
+
+                const response = await fetch(
+                    `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
+                );
+                const data = await response.json();
+
+                let address = '';
+                if (data.address) {
+                    const { road, suburb, city, country } = data.address;
+                    address = `${road ? road + ', ' : ''}${suburb ? suburb + ', ' : ''}${city || ''}`;
+                }
+
+                locationInfo.innerHTML = `
+                    <i class="fas fa-map-marker-alt"></i>
+                    <div>
+                        ${address}
+                        <a href="/restaurants?lat=${latitude}&lon=${longitude}" class="location-link">
+                            Yakın restoranları göster
+                        </a>
+                    </div>
+                `;
+            } catch (error) {
+                locationInfo.innerHTML = '<i class="fas fa-map-marker-alt"></i> İzmir, Türkiye';
+            }
+        },
+        (error) => {
+            let message = 'İzmir, Türkiye';
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    message = 'Konum izni reddedildi';
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    message = 'Konum bilgisi alınamadı';
+                    break;
+                case error.TIMEOUT:
+                    message = 'Konum isteği zaman aşımına uğradı';
+                    break;
+            }
+            locationInfo.innerHTML = `<i class="fas fa-map-marker-alt"></i> ${message}`;
+        },
+        {
+            enableHighAccuracy: true,
+            timeout: 5000,
+            maximumAge: 0
+        }
+    );
+}
+
+// Sayfa yüklendiğinde konum al
+document.addEventListener('DOMContentLoaded', getLocation);
+</script>
+
+<!-- Ek stil tanımlamaları -->
+<style>
+        /* Ödeme metodları için stiller */
+        .payment-methods {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            font-size: 2rem;
+        }
+
+        .payment-methods i {
+            color: rgba(255, 255, 255, 0.8);
+            transition: var(--transition);
+        }
+
+        .payment-methods i:hover {
+            color: white;
+        }
+
+        /* App store linkleri için stiller */
+        .app-links a {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius);
+            color: white;
+            text-decoration: none;
+            margin: 0.5rem;
+            transition: var(--transition);
+        }
+
+        .app-links a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Header scroll efekti */
+        .header.scrolled {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        /* Mobil menü için ek stiller */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+                font-size: 1.5rem;
+                color: var(--text-color);
+                background: none;
+                border: none;
+                cursor: pointer;
+            }
+
+            .nav-menu.active {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: var(--card-bg);
+                padding: 1rem;
+                box-shadow: var(--shadow);
+            }
+        }
+
+
+</style>
+</body>
+</html>

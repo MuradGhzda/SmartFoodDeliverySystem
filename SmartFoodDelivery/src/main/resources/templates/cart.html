@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartFood - Sepetim</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #ff6347;
+            --secondary-color: #333;
+            --background-color: #f5f5f5;
+            --card-background: #ffffff;
+            --border-color: #e0e0e0;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .cart-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .cart-title {
+            font-size: 2rem;
+            color: var(--secondary-color);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .cart-title i {
+            color: var(--primary-color);
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 3rem;
+            background: var(--card-background);
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+        }
+
+        .empty-cart i {
+            font-size: 4rem;
+            color: var(--border-color);
+            margin-bottom: 1rem;
+        }
+
+        .empty-cart p {
+            color: var(--secondary-color);
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .continue-shopping {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+
+        .continue-shopping:hover {
+            background-color: #ff4f2b;
+            transform: translateY(-2px);
+        }
+
+        .cart-items {
+            background: var(--card-background);
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .cart-item {
+            display: grid;
+            grid-template-columns: auto 1fr auto auto;
+            align-items: center;
+            gap: 1.5rem;
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        .cart-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .item-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        .item-details h3 {
+            font-size: 1.1rem;
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .item-price {
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .quantity-btn {
+            width: 30px;
+            height: 30px;
+            border: none;
+            background-color: var(--background-color);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quantity-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .quantity {
+            font-weight: 500;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .remove-item {
+            color: var(--danger-color);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: var(--transition);
+        }
+
+        .remove-item:hover {
+            transform: scale(1.1);
+        }
+
+        .cart-summary {
+            background: var(--card-background);
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .summary-row:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+            margin-bottom: 1.5rem;
+        }
+
+        .summary-label {
+            color: #666;
+        }
+
+        .summary-value {
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+
+        .total-amount {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .checkout-btn {
+            width: 100%;
+            padding: 1rem;
+            background-color: var(--success-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .checkout-btn:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .cart-item {
+                grid-template-columns: 1fr auto;
+                gap: 1rem;
+            }
+
+            .item-image {
+                grid-column: 1/-1;
+                width: 100%;
+                height: 200px;
+            }
+
+            .quantity-controls {
+                grid-column: 1/2;
+            }
+
+            .remove-item {
+                grid-column: 2/3;
+                justify-self: end;
+            }
+
+        }
+        .cart-summary {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.summary-title {
+    color: var(--primary-color);
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--primary-color);
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #eee;
+}
+
+.summary-row.total {
+    border-top: 2px solid #eee;
+    border-bottom: none;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.summary-label {
+    color: #666;
+}
+
+.summary-value {
+    font-weight: 500;
+}
+
+.checkout-form {
+    margin-top: 2rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #333;
+    font-weight: 500;
+}
+
+.form-select, .form-input {
+    width: 100%;
+    padding: 0.8rem;
+    border: 2px solid #eee;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-select:focus, .form-input:focus {
+    border-color: var(--primary-color);
+    outline: none;
+}
+
+textarea.form-input {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.checkout-btn {
+    width: 100%;
+    padding: 1rem;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.checkout-btn:hover {
+    background-color: #ff4f2b;
+}
+
+.checkout-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.checkout-btn i {
+    font-size: 1.2rem;
+}
+
+
+    </style>
+</head>
+<body>
+<div class="cart-container">
+    <div class="cart-header">
+        <h1 class="cart-title">
+            <i class="fas fa-shopping-cart"></i>
+            Sepetim
+        </h1>
+    </div>
+
+    <!-- Empty Cart -->
+    <div th:if="${cart.items.empty}" class="empty-cart">
+        <i class="fas fa-shopping-basket"></i>
+        <p>Sepetiniz boş</p>
+        <a th:href="@{/restaurants}" class="continue-shopping">
+            <i class="fas fa-arrow-left"></i>
+            Alışverişe Devam Et
+        </a>
+    </div>
+
+    <!-- Cart Items -->
+    <div th:unless="${cart.items.empty}">
+        <div class="cart-items">
+            <div th:each="item : ${cart.items}" class="cart-item">
+                <img th:src="${item.menuItem.imageUrl}" alt="food" class="item-image">
+                <div class="item-details">
+                    <h3 th:text="${item.menuItem.name}">Ürün Adı</h3>
+                    <div class="item-price" th:text="${'₺' + item.menuItem.price}">₺0.00</div>
+                </div>
+                <div class="quantity-controls">
+                    <button class="quantity-btn"
+                            th:onclick="'window.location.href=\'' + @{/cart/decrease/{id}(id=${item.id})} + '\''">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                    <span class="quantity" th:text="${item.quantity}">1</span>
+                    <button class="quantity-btn"
+                            th:onclick="'window.location.href=\'' + @{/cart/increase/{id}(id=${item.id})} + '\''">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+                <button class="remove-item"
+                        th:onclick="'window.location.href=\'' + @{/cart/remove/{id}(id=${item.id})} + '\''">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="cart-summary">
+            <h3 class="summary-title">Sipariş Özeti</h3>
+
+            <div class="summary-row">
+                <span class="summary-label">Ara Toplam</span>
+                <span class="summary-value" th:text="${'₺' + cart.subtotal}">₺0.00</span>
+            </div>
+
+            <div class="summary-row">
+                <span class="summary-label">Teslimat Ücreti</span>
+                <span class="summary-value" th:text="${'₺' + cart.deliveryFee}">₺0.00</span>
+            </div>
+
+            <div class="summary-row total">
+                <span class="summary-label">Toplam</span>
+                <span class="summary-value" th:text="${'₺' + cart.totalAmount}">₺0.00</span>
+            </div>
+
+            <form th:action="@{/cart/checkout}" method="post" class="checkout-form">
+                <div class="form-group">
+                    <label for="addressSelect">Teslimat Adresi</label>
+                    <select id="addressSelect" name="addressId" class="form-select" required>
+                        <option value="">Adres Seçin</option>
+                        <option th:each="address : ${cart.user.addresses}"
+                                th:value="${address.id}"
+                                th:text="${address.title + ' - ' + address.addressLine1}">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="notes">Özel Notlar</label>
+                    <textarea id="notes" name="specialInstructions"
+                              class="form-input"
+                              placeholder="Varsa özel notlarınızı yazın"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="paymentMethod">Ödeme Yöntemi</label>
+                    <select id="paymentMethod" name="paymentMethod" class="form-select" required>
+                        <option value="CASH" th:selected="${true}">Nakit</option>
+                        <option value="CREDIT_CARD">Kredi Kartı</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="checkout-btn" th:disabled="${cart.isEmpty()}">
+                    <i class="fas fa-check"></i>
+                    Siparişi Tamamla
+                </button>
+            </form>
+        </div>
+
+    </div>
+</div>
+</body>
+</html>

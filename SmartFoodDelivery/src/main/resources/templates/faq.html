@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>SSS - SmartFood</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #ff6347;
+            --secondary-color: #333;
+            --background-color: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-color);
+            color: var(--secondary-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-title {
+            text-align: center;
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .faq-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .faq-item {
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 1.5rem;
+        }
+
+        .faq-question {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .faq-question i {
+            margin-right: 10px;
+        }
+
+        .faq-answer {
+            color: #666;
+            padding-left: 1.8rem;
+        }
+
+        .home-button {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            border-radius: 50%;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-decoration: none;
+            transition: transform 0.3s ease;
+        }
+
+        .home-button:hover {
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1 class="page-title">Sıkça Sorulan Sorular</h1>
+
+    <div class="faq-card">
+        <div class="faq-item">
+            <div class="faq-question">
+                <i class="fas fa-question-circle"></i>
+                Minimum sipariş tutarı nedir?
+            </div>
+            <div class="faq-answer">
+                Minimum sipariş tutarı her restoran için farklılık göstermektedir. Seçtiğiniz restoranın minimum sipariş tutarını restoran sayfasında görebilirsiniz.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">
+                <i class="fas fa-clock"></i>
+                Siparişim ne kadar sürede gelir?
+            </div>
+            <div class="faq-answer">
+                Siparişiniz ortalama 30-45 dakika içerisinde teslim edilir. Tahmini teslimat süresini sipariş aşamasında görebilirsiniz.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">
+                <i class="fas fa-credit-card"></i>
+                Hangi ödeme yöntemlerini kullanabilirim?
+            </div>
+            <div class="faq-answer">
+                Kredi kartı, banka kartı ve nakit ödeme seçeneklerini kullanabilirsiniz. Online ödemelerde tüm güvenlik önlemleri alınmıştır.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">
+                <i class="fas fa-map-marker-alt"></i>
+                Hangi bölgelere hizmet veriyorsunuz?
+            </div>
+            <div class="faq-answer">
+                İzmir'in tüm merkez ilçelerine hizmet vermekteyiz. Teslimat bölgelerini restoran seçimi sırasında kontrol edebilirsiniz.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">
+                <i class="fas fa-undo"></i>
+                Siparişimi iptal edebilir miyim?
+            </div>
+            <div class="faq-answer">
+                Restoranın siparişinizi hazırlamaya başlamamış olması durumunda iptal edebilirsiniz. İptal için müşteri hizmetlerimizle iletişime geçebilirsiniz.
+            </div>
+        </div>
+    </div>
+</div>
+
+<a href="/" class="home-button">
+    <i class="fas fa-home"></i>
+</a>
+</body>
+</html>

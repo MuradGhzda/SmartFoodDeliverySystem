@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Siparişler - Admin Panel</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+    --primary-color: #ff6347;
+    --secondary-color: #333;
+    --background-color: #f5f5f5;
+    --card-bg: #ffffff;
+    --text-color: #333;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+    --border-radius: 10px;
+    --success-color: #28a745;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+}
+
+/* Temel Stiller */
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background-color: var(--background-color);
+    font-family: 'Poppins', sans-serif;
+    color: var(--text-color);
+}
+
+/* Ana Container ve Sidebar */
+.admin-container {
+    display: flex;
+    min-height: 100vh;
+    position: relative;
+}
+
+.sidebar {
+    width: 220px;
+    background: linear-gradient(to bottom, #2c3e50, #34495e);
+    padding: 1.5rem 1rem;
+    color: white;
+    position: fixed;
+    height: 100vh;
+    z-index: 1000;
+}
+
+.sidebar h2 {
+    color: white;
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    text-align: center;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    padding: 0.6rem 0.8rem;
+    color: rgba(255,255,255,0.8);
+    text-decoration: none;
+    margin: 0.5rem 0;
+    border-radius: var(--border-radius);
+    transition: var(--transition);
+    font-size: 0.95rem;
+}
+
+.menu-item i {
+    width: 20px;
+    margin-right: 10px;
+    font-size: 1rem;
+}
+
+.menu-item:hover, .menu-item.active {
+    background: var(--primary-color);
+    color: white;
+    transform: translateX(5px);
+}
+
+/* Ana İçerik */
+.main-content {
+    flex: 1;
+    padding: 2rem;
+    margin-left: 220px;
+    width: calc(100% - 220px);
+    box-sizing: border-box;
+}
+
+.main-content h1 {
+    color: var(--secondary-color);
+    font-size: 1.8rem;
+    margin-bottom: 2rem;
+    position: relative;
+    padding-bottom: 0.5rem;
+}
+
+.main-content h1::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 50px;
+    height: 3px;
+    background: var(--primary-color);
+    border-radius: 2px;
+}
+
+/* Sipariş Tablosu */
+.orders-table {
+    width: 100%;
+    background: var(--card-bg);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    margin-top: 1.5rem;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.orders-table th {
+    background: #f8f9fa;
+    color: var(--secondary-color);
+    font-weight: 600;
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 2px solid #eee;
+}
+
+.orders-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #eee;
+    vertical-align: middle;
+}
+
+.orders-table tbody tr:hover {
+    background-color: rgba(255, 99, 71, 0.05);
+}
+
+/* Durum Seçici */
+.status-select {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: var(--border-radius);
+    margin-right: 0.5rem;
+    font-size: 0.9rem;
+    background-color: white;
+    color: var(--text-color);
+    transition: var(--transition);
+    min-width: 140px;
+}
+
+.status-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(255, 99, 71, 0.1);
+    outline: none;
+}
+
+/* Butonlar */
+.btn-update, .btn-delete {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-update {
+    background: var(--primary-color);
+    color: white;
+}
+
+.btn-delete {
+    background: var(--danger-color);
+    color: white;
+}
+
+.btn-update:hover, .btn-delete:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.btn-update:hover {
+    background: #e5563e;
+}
+
+.btn-delete:hover {
+    background: #c82333;
+}
+
+/* Form Elementleri */
+form {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Responsive Tasarım */
+@media (max-width: 1024px) {
+    .main-content {
+        margin-left: 220px;
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .admin-container {
+        flex-direction: column;
+    }
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+        padding: 1rem;
+    }
+    .orders-table {
+        font-size: 0.9rem;
+    }
+    .status-select {
+        min-width: 120px;
+    }
+    form {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    .btn-update, .btn-delete {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Tablo Responsive Ayarları */
+@media (max-width: 1024px) {
+    .main-content {
+        overflow-x: auto;
+    }
+    .orders-table {
+        min-width: 900px;
+    }
+}
+    </style>
+</head>
+<body>
+<div class="admin-container">
+  <!-- Sidebar aynı kalacak -->
+  <div class="sidebar">
+    <h2>Admin Panel</h2>
+    <nav>
+      <a href="/admin/dashboard" class="menu-item">
+        <i class="fas fa-home"></i>
+        Dashboard
+      </a>
+      <a href="/admin/users" class="menu-item">
+        <i class="fas fa-users"></i>
+        Kullanıcılar
+      </a>
+      <a href="/admin/restaurants" class="menu-item">
+        <i class="fas fa-utensils"></i>
+        Restoranlar
+      </a>
+      <a href="/admin/orders" class="menu-item">
+        <i class="fas fa-shopping-cart"></i>
+        Siparişler
+      </a>
+      <a href="/" class="menu-item">
+        <i class="fas fa-arrow-left"></i>
+        Siteye Dön
+      </a>
+    </nav>
+  </div>
+  <div class="main-content">
+    <h1>Sipariş Yönetimi</h1>
+
+    <table class="orders-table">
+      <thead>
+      <tr>
+        <th>Sipariş ID</th>
+        <th>Müşteri</th>
+        <th>Restoran</th>
+        <th>Tutar</th>
+        <th>Durum</th>
+        <th>Tarih</th>
+        <th>İşlemler</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="order : ${orders}">
+        <td th:text="${order.id}"></td>
+        <td th:text="${order.user.username}"></td>
+        <td th:text="${order.restaurant.name}"></td>
+        <td th:text="${'₺' + order.totalAmount}"></td>
+        <td>
+          <form th:action="@{/admin/orders/{id}/status(id=${order.id})}"
+                method="post" style="display: inline;">
+            <select name="status" class="status-select">
+              <option th:each="status : ${T(org.example.enums.OrderStatus).values()}"
+                      th:value="${status}"
+                      th:text="${status.displayName}"
+                      th:selected="${order.status == status}">
+              </option>
+            </select>
+            <button type="submit" class="btn-update">Güncelle</button>
+          </form>
+        </td>
+        <td th:text="${#temporals.format(order.orderTime, 'dd/MM/yyyy HH:mm')}"></td>
+        <td>
+          <form th:action="@{/admin/orders/{id}/delete(id=${order.id})}"
+                method="post"
+                style="display: inline;"
+                onsubmit="return confirm('Bu siparişi silmek istediğinizden emin misiniz?')">
+            <button type="submit" class="btn-delete">Sil</button>
+          </form>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</body>
+</html>

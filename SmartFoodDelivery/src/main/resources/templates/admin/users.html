@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Kullanıcı Yönetimi - Admin Panel</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <style>
+  :root {
+  --primary-color: #ff6347;
+  --secondary-color: #333;
+  --background-color: #f5f5f5;
+  --card-bg: #ffffff;
+  --border-radius: 10px;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s ease;
+  }
+
+  body {
+  background-color: var(--background-color);
+  font-family: 'Poppins', sans-serif;
+  color: var(--secondary-color);
+  }
+
+  /* Admin Container ve Sidebar Stilleri */
+  .admin-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--background-color);
+  }
+
+  .sidebar {
+  width: 280px;
+  background: linear-gradient(to bottom, #2c3e50, #34495e);
+  padding: 2rem 1.5rem;
+  color: white;
+  position: fixed;
+  height: 100vh;
+  z-index: 1000;
+  }
+
+  .sidebar h2 {
+  color: white;
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .menu-item {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  color: rgba(255,255,255,0.8);
+  text-decoration: none;
+  margin: 0.5rem 0;
+  border-radius: var(--border-radius);
+  transition: var(--transition);
+  }
+
+  .menu-item i {
+  width: 24px;
+  margin-right: 12px;
+  font-size: 1.1rem;
+  }
+
+  .menu-item:hover, .menu-item.active {
+  background: var(--primary-color);
+  color: white;
+  transform: translateX(5px);
+  }
+
+  /* Ana İçerik Alanı */
+  .main-content {
+  flex: 1;
+  padding: 2rem;
+  margin-left: 280px;
+  }
+
+  .main-content h1 {
+  color: var(--secondary-color);
+  font-size: 1.8rem;
+  margin-bottom: 2rem;
+  position: relative;
+  padding-bottom: 0.5rem;
+  }
+
+  .main-content h1::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 50px;
+  height: 3px;
+  background: var(--primary-color);
+  border-radius: 2px;
+  }
+
+  /* Kart ve Tablo Stilleri */
+  .card {
+  background: var(--card-bg);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  border: none;
+  margin-bottom: 2rem;
+  }
+
+  .card-body {
+  padding: 1.5rem;
+  }
+
+  .users-table {
+  width: 100%;
+  margin-bottom: 0;
+  }
+
+  .users-table thead th {
+  background: #f8f9fa;
+  color: var(--secondary-color);
+  font-weight: 600;
+  padding: 1rem;
+  border-bottom: 2px solid #eee;
+  }
+
+  .users-table tbody td {
+  padding: 1rem;
+  vertical-align: middle;
+  border-bottom: 1px solid #eee;
+  }
+
+  .users-table tbody tr:hover {
+  background-color: rgba(255, 99, 71, 0.05);
+  }
+
+  /* Form Elementleri */
+  .role-select {
+  max-width: 200px;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: var(--border-radius);
+  background-color: white;
+  color: var(--secondary-color);
+  transition: var(--transition);
+  }
+
+  .role-select:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(255, 99, 71, 0.1);
+  outline: none;
+  }
+
+  /* Buton Stilleri */
+  .btn-danger {
+  background: #dc3545;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: var(--border-radius);
+  transition: var(--transition);
+  }
+
+  .btn-danger:hover {
+  background: #c82333;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(220, 53, 69, 0.2);
+  }
+
+  /* Uyarı Mesajları */
+  .alert {
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  margin-bottom: 1.5rem;
+  border: none;
+  }
+
+  .alert-success {
+  background: rgba(40, 167, 69, 0.1);
+  color: #28a745;
+  border-left: 4px solid #28a745;
+  }
+
+  .alert-danger {
+  background: rgba(220, 53, 69, 0.1);
+  color: #dc3545;
+  border-left: 4px solid #dc3545;
+  }
+
+  /* Responsive Tasarım */
+  @media (max-width: 1024px) {
+  .sidebar {
+  width: 240px;
+  }
+  .main-content {
+  margin-left: 240px;
+  }
+  }
+
+  @media (max-width: 768px) {
+  .admin-container {
+  flex-direction: column;
+  }
+  .sidebar {
+  width: 100%;
+  height: auto;
+  position: relative;
+  }
+  .main-content {
+  margin-left: 0;
+  padding: 1rem;
+  }
+  .card-body {
+  padding: 1rem;
+  }
+  .users-table {
+  font-size: 0.9rem;
+  }
+  .role-select {
+  max-width: 150px;
+  }
+  }
+  </style>
+</head>
+<body>
+<div class="admin-container">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>Admin Panel</h2>
+    <nav>
+      <a href="/admin/dashboard" class="menu-item">
+        <i class="fas fa-home"></i> Dashboard
+      </a>
+      <a href="/admin/users" class="menu-item active">
+        <i class="fas fa-users"></i> Kullanıcılar
+      </a>
+      <a href="/admin/restaurants" class="menu-item">
+        <i class="fas fa-utensils"></i> Restoranlar
+      </a>
+      <a href="/admin/orders" class="menu-item">
+        <i class="fas fa-shopping-cart"></i> Siparişler
+      </a>
+      <a href="/" class="menu-item">
+        <i class="fas fa-arrow-left"></i> Siteye Dön
+      </a>
+    </nav>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content container-fluid">
+    <h1 class="mb-4">Kullanıcı Yönetimi</h1>
+
+    <!-- Success/Error Messages -->
+    <div th:if="${successMessage}" class="alert alert-success">
+      <span th:text="${successMessage}"></span>
+    </div>
+    <div th:if="${errorMessage}" class="alert alert-danger">
+      <span th:text="${errorMessage}"></span>
+    </div>
+
+    <!-- Users Table -->
+    <div class="card">
+      <div class="card-body">
+        <table class="table table-striped users-table">
+          <thead>
+          <tr>
+            <th>ID</th>
+            <th>Kullanıcı Adı</th>
+            <th>E-posta</th>
+            <th>Ad Soyad</th>
+            <th>Roller</th>
+            <th>İşlemler</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="user : ${users}">
+            <td th:text="${user.id}">1</td>
+            <td th:text="${user.username}">kullanici_adi</td>
+            <td th:text="${user.email}">email@example.com</td>
+            <td th:text="${user.firstName + ' ' + user.lastName}">Ad Soyad</td>
+            <td>
+              <form th:action="@{/admin/users/{id}/update-role(id=${user.id})}" method="post">
+                <select name="role" class="form-control role-select" onchange="this.form.submit()">
+                  <option value="ROLE_USER"
+                          th:selected="${user.roles.?[name == 'ROLE_USER']}">
+                    Kullanıcı
+                  </option>
+                  <option value="ROLE_ADMIN"
+                          th:selected="${user.roles.?[name == 'ROLE_ADMIN']}">
+                    Admin
+                  </option>
+                </select>
+              </form>
+            </td>
+            <td>
+              <form th:action="@{/admin/users/{id}/delete(id=${user.id})}"
+                    method="post"
+                    onsubmit="return confirm('Bu kullanıcıyı silmek istediğinizden emin misiniz?')">
+                <button type="submit" class="btn btn-danger btn-sm">
+                  <i class="fas fa-trash"></i> Sil
+                </button>
+              </form>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
